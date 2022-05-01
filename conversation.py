@@ -116,7 +116,7 @@ class Conversation():
             elif text == CMD_REMOVE:
                 self.set_state(BotState.REMOVING)
 
-            elif text == CMD_REVIEW:
+            elif text == CMD_REVIEW or text == CMD_REVIEW_ENG:
                 self.set_state(BotState.REVIEWING_ENG)
 
             elif text == CMD_REVIEW_CHI:
