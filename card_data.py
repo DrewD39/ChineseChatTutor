@@ -1,7 +1,7 @@
+import enum
 import logging
 import math
 import operator
-import os
 import pickle
 import random
 import time
@@ -9,10 +9,16 @@ import time
 # What factor to increase the review interval by upon success/failure.
 study_interval_modifier = 1.5
 
-DATA_FILE_NAME = 'cards.pkl'
+DATA_FILE_NAME = '.cards.pkl'
 
 logging.basicConfig(level=logging.INFO)
 
+
+class CardSelection(enum.IntEnum):
+    RANDOM = 0
+    CONFIDENCE_WEIGHTED = 1
+    STRICT_ORDERED = 2
+    RANDOM_READY = 3
 
 class Card:
     """A card represents a single word/phrase to be studied."""
@@ -121,10 +127,16 @@ class CardDeck:
             ret_string += f'{card.english}, {card.chinese}  ({card.confidence_index:.2f})\n'
         return ret_string.rstrip()
 
-    def select_card(self, method=0, message_function=None):
+    def select_card(self, method=CardSelection.RANDOM):
         """Select a card at random with preference given to the least well known cards."""
         """Select any card that is ready to be reviewed."""
-        return self.cards[random.randint(0, len(self.cards)-1)]
+        if method == CardSelection.RANDOM:
+            return self.cards[random.randint(0, len(self.cards)-1)]
+        # Very basic algorithm to give preference weight to low indices.
+        # Note that 0 idx does not get as much weight as it should, but it is enough.
+        elif method == CardSelection.CONFIDENCE_WEIGHTED:
+            index = abs(random.randint(0, len(self.cards)-1) - random.randint(0, len(self.cards)-1))
+            return self.cards[index]
 
 
 # FOR TESTING.
