@@ -138,6 +138,8 @@ class CardDeck:
     def select_card(self, method=CardSelection.RANDOM):
         """Select a card at random with preference given to the least well known cards."""
         """Select any card that is ready to be reviewed."""
+        # Refresh to update confidence changes. Super innefficient.
+        self.refresh()
         if method == CardSelection.RANDOM:
             return self.cards[random.randint(0, len(self.cards)-1)]
         # Very basic algorithm to give preference weight to low indices.
