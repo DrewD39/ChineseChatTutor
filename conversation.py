@@ -108,7 +108,7 @@ class Conversation():
                 i = 0
                 lines_per_msg = 200
                 while i < len(list_strs):
-                    self.message_function('\n'.join(list_strs[i:min(len(list_strs) - 1, i + lines_per_msg)]))
+                    self.message_function('\n'.join(list_strs[i:min(len(list_strs), i + lines_per_msg)]))
                     i += lines_per_msg
             elif text == CMD_ADD:
                 self.set_state(BotState.ADDING_ENGLISH)
