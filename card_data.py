@@ -2,6 +2,7 @@ import enum
 import logging
 import math
 import operator
+import os
 import pickle
 import random
 import time
@@ -9,7 +10,10 @@ import time
 # What factor to increase the review interval by upon success/failure.
 study_interval_modifier = 1.5
 
-DATA_FILE_NAME = '.cards.pkl'
+# Parent directory of this file.
+PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+DATA_FILE_PATH = os.path.join(PARENT_DIR, '.cards.pkl')
 
 logging.basicConfig(level=logging.INFO)
 
@@ -66,7 +70,7 @@ class CardDeck:
 
     def __init__(self):
         try:
-            with open(DATA_FILE_NAME, "rb") as file_in:
+            with open(DATA_FILE_PATH, "rb") as file_in:
                 self.cards = pickle.load(file_in)
         except FileNotFoundError:
             logging.warning('No cards file detected. Creating an empty card set.')
@@ -88,7 +92,7 @@ class CardDeck:
         self.cards.sort(key=operator.attrgetter('confidence_index'))
 
         # Save to disk.
-        with open(DATA_FILE_NAME, 'wb') as out_file:
+        with open(DATA_FILE_PATH, 'wb') as out_file:
             pickle.dump(self.cards, out_file, pickle.HIGHEST_PROTOCOL)
 
     def add_card(self, english, chinese):
