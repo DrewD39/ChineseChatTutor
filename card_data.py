@@ -117,6 +117,8 @@ class CardDeck:
     def summary(self):
         """Return string summarizing the state of the user CardDeck."""
         self.refresh()
+        if len(self.cards) == 0:
+            return "There are no cards in the deck. Use 'add' to add some!"
         return_str = ''
         return_str += f'This study set contains {len(self.cards)} cards.'
         return_str += f'\n{self.num_attempts} cards have been reviewed ({(self.num_successes / max(1, self.num_attempts) * 100):.2f}% success rate).'
@@ -126,6 +128,8 @@ class CardDeck:
     def list_all(self):
         """Return a string containing all cards (english, chinese)."""
         self.refresh()
+        if len(self.cards) == 0:
+            return "There are no cards in the deck. Use 'add' to add some!"
         ret_string = ''
         for card in self.cards:
             ret_string += f'{card.english}, {card.chinese}  ({card.confidence_index:.2f})\n'
