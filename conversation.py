@@ -114,12 +114,15 @@ class Conversation():
                 self.set_state(BotState.ADDING_ENGLISH)
 
             elif text == CMD_REMOVE:
+                if len(self.card_deck.cards) == 0: return
                 self.set_state(BotState.REMOVING)
 
             elif text == CMD_REVIEW or text == CMD_REVIEW_ENG:
+                if len(self.card_deck.cards) == 0: return
                 self.set_state(BotState.REVIEWING_ENG)
 
             elif text == CMD_REVIEW_CHI:
+                if len(self.card_deck.cards) == 0: return
                 self.set_state(BotState.REVIEWING_CHI)
             else:
                 self.message_function(f"i can't interpret that, but you can ask for 'help'")
