@@ -58,7 +58,7 @@ class Conversation():
         """Set the state machine to state and execute logic for the state."""
         self.state = state
         if state == BotState.IDLE:
-            self.message_function("oke. let me know if you need 'help'")
+            self.message_function(f"oke. let me know if you need '{CMD_HELP}'")
         elif state == BotState.ADDING_ENGLISH:
             self.editing_card_english = ''
             self.editing_card_chinese = ''
@@ -125,7 +125,7 @@ class Conversation():
                 if len(self.card_deck.cards) == 0: return
                 self.set_state(BotState.REVIEWING_CHI)
             else:
-                self.message_function(f"i can't interpret that, but you can ask for 'help'")
+                self.message_function(f"i can't interpret that, but you can ask for '{CMD_HELP}'")
 
         # non-idle state commands
         elif self.state == BotState.ADDING_ENGLISH:
