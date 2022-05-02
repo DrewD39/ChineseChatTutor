@@ -115,7 +115,7 @@ class CardDeck:
     def add_card(self, english, chinese):
         # Ignore duplicates, where both English and Chinese match.
         if any([english == existing_card.english and chinese == existing_card.chinese for existing_card in self.cards]):
-            logging.warning(f'Ignoring duplicate card: {card.english}, {card.chinese}')
+            logging.warning(f'Ignoring duplicate card: {english}, {chinese}')
             return False
         card = Card(english, chinese)
         self.cards.append(card)
