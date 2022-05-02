@@ -172,3 +172,4 @@ class Conversation():
             # Incorrect guess.
             else:
                 self.message_function(f"that's not it, try again!\nYou can also respond with {REVIEW_CMDS}")
+                self.reviewing_card.review_result(False)
