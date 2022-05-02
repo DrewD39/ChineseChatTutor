@@ -10,6 +10,21 @@ import time
 # What factor to increase the review interval by upon success/failure.
 study_interval_modifier = 1.5
 
+# Link to website for breakdown of traditional characters. 
+LOOKUP_URL = 'https://www.moedict.tw/'
+
+# Default cards to put in all decks. Includes most bot commands.
+DEFAULT_CARDS = [('add','添加'),
+                ('remove','消除'),
+                ('website','網址'),
+                ('help','幫助'),
+                ('practice','實踐'),
+                ('summary','概括'),
+                ('list','列表'),
+                ('english language','英文'),
+                ('chinese language','中文'),
+               ]
+
 # Parent directory of this file.
 PARENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -47,7 +62,7 @@ class Card:
     def get_link(self):
         """Return a string containing a link to the chinese characters information."""
         # return 'plecoapi://x-callback-url/s?q=' + self.chinese # Universal Pleco link
-        return 'https://www.moedict.tw/' + self.chinese
+        return LOOKUP_URL + self.chinese
 
     def review_result(self, success):
         """Update the card based on the result of review."""
@@ -75,6 +90,8 @@ class CardDeck:
         except FileNotFoundError:
             logging.warning('No cards file detected. Creating an empty card set.')
             self.cards = []
+            for pair in DEFAULT_CARDS:
+                self.cards.append(Card(pair[0], pair[1]))
         self.refresh()
 
     def refresh(self):

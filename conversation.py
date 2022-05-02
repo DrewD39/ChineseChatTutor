@@ -1,6 +1,6 @@
 # This file manages the state machine of the conversation so that a user can intereact with
 # the card data seamlessly.
-from card_data import CardDeck, CardSelection
+from card_data import CardDeck, CardSelection, LOOKUP_URL
 import enum
 import logging
 
@@ -13,13 +13,14 @@ CMD_PREFIX = '/'
 CMD_STOP = 'stop'
 CMD_ADD = '添加'
 CMD_REMOVE = '消除'
+CMD_LINK = '網址'
 CMD_HELP = '幫助'
 CMD_REVIEW = '實踐'
 CMD_SUMMARY = '概括'
 CMD_ALL = '列表'
 CMD_REVIEW_ENG = '英文'
 CMD_REVIEW_CHI = '中文'
-CMDS = [CMD_STOP, CMD_ADD, CMD_REMOVE, CMD_HELP, CMD_SUMMARY, CMD_ALL, CMD_REVIEW, CMD_REVIEW_ENG, CMD_REVIEW_CHI]
+CMDS = [CMD_STOP, CMD_ADD, CMD_REMOVE, CMD_LINK, CMD_SUMMARY, CMD_ALL, CMD_REVIEW, CMD_REVIEW_ENG, CMD_REVIEW_CHI, CMD_HELP]
 
 REVIEW_CMD_LINK = '網址'
 REVIEW_CMD_CHINESE = '中文'
@@ -99,33 +100,36 @@ class Conversation():
 
         # Handle commands from the idle state.
         if self.state == BotState.IDLE:
-            if text == CMD_HELP:
+            cmd = text.split()[0]
+            if cmd == CMD_HELP:
                 self.message_function(f'You can say any of these: {CMDS}')
-            elif text == CMD_SUMMARY:
+            elif cmd == CMD_LINK:
+                self.message_function(LOOKUP_URL + text[len(CMD_LINK)+1:])
+            elif cmd == CMD_SUMMARY:
                 self.message_function(self.card_deck.summary())
-            elif text == CMD_ALL:
+            elif cmd == CMD_ALL:
                 list_strs = self.card_deck.list_all().split('\n')
                 i = 0
                 lines_per_msg = 200
                 while i < len(list_strs):
                     self.message_function('\n'.join(list_strs[i:min(len(list_strs), i + lines_per_msg)]))
                     i += lines_per_msg
-            elif text == CMD_ADD:
+            elif cmd == CMD_ADD:
                 self.set_state(BotState.ADDING_ENGLISH)
 
-            elif text == CMD_REMOVE:
+            elif cmd == CMD_REMOVE:
                 if len(self.card_deck.cards) == 0: return
                 self.set_state(BotState.REMOVING)
 
-            elif text == CMD_REVIEW or text == CMD_REVIEW_ENG:
+            elif cmd == CMD_REVIEW or cmd == CMD_REVIEW_ENG:
                 if len(self.card_deck.cards) == 0: return
                 self.set_state(BotState.REVIEWING_ENG)
 
-            elif text == CMD_REVIEW_CHI:
+            elif cmd == CMD_REVIEW_CHI:
                 if len(self.card_deck.cards) == 0: return
                 self.set_state(BotState.REVIEWING_CHI)
             else:
-                self.message_function(f"i can't interpret that, but you can ask for '{CMD_HELP}'")
+                self.message_function(f"I can't interpret that, but you can ask for '{CMD_HELP}'")
 
         # non-idle state commands
         elif self.state == BotState.ADDING_ENGLISH:
